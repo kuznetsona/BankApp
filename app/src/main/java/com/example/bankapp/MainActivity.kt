@@ -1,7 +1,12 @@
 package com.example.bankapp
 
+
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -15,63 +20,21 @@ import org.json.JSONException
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binTextView: TextView
-
-    private lateinit var schemeTextView: TextView
-    private lateinit var lengthTextView: TextView
-    private lateinit var luhnTextView: TextView
-    private lateinit var typeTextView: TextView
-    private lateinit var brandTextView: TextView
-    private lateinit var numericCountryTextView: TextView
-    private lateinit var alpha2CountryTextView: TextView
-    private lateinit var nameCountryTextView: TextView
-    private lateinit var emojiCountryTextView: TextView
-    private lateinit var currencyCountryTextView: TextView
-    private lateinit var cordTextView: TextView
-    private lateinit var nameBankTextView: TextView
-    private lateinit var urlBankTextView: TextView
-    private lateinit var phoneBankTextView: TextView
-    private lateinit var prepaidTextView: TextView
-
-    private lateinit var searchView: androidx.appcompat.widget.SearchView
+    private lateinit var dataBIN: DataBIN
+    private lateinit var searchView: SearchView
 
     private var requestQueue: RequestQueue? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         binTextView = findViewById(R.id.binTextView)
-        schemeTextView = findViewById(R.id.schemeTextView)
-        lengthTextView = findViewById(R.id.lengthTextView)
-        luhnTextView = findViewById(R.id.luhnTextView)
-        typeTextView = findViewById(R.id.typeTextView)
-        brandTextView = findViewById(R.id.brandTextView)
-        numericCountryTextView = findViewById(R.id.numericCountryTextView)
-        alpha2CountryTextView = findViewById(R.id.alpha2CountryTextView)
-        nameCountryTextView = findViewById(R.id.nameCountryTextView)
-        emojiCountryTextView = findViewById(R.id.emojiCountryTextView)
-        currencyCountryTextView = findViewById(R.id.currencyСountryTextView)
-        cordTextView = findViewById(R.id.cordTextView)
-        nameBankTextView = findViewById(R.id.nameBankTextView)
-        urlBankTextView = findViewById(R.id.urlBankTextView)
-        phoneBankTextView = findViewById(R.id.phoneBankTextView)
-        prepaidTextView = findViewById(R.id.prepaidTextView)
         searchView = findViewById(R.id.searchView)
-
-
-
-
-
         requestQueue = Volley.newRequestQueue(this)
 
 
-
-
-        //var bin = 55369140
         var bin : Long = 45717360
-        var variable: String
-        //bin = searchView.inputType
 
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -83,9 +46,6 @@ class MainActivity : AppCompatActivity() {
                     bin /= 10
                 }
 
-                if (bin < 10000000){
-
-                }
                 getJSON(bin)
                 binTextView.text = bin.toString()
                 return false
@@ -96,11 +56,9 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
-/*
-        searchView.setOnCloseListener() {
-            binTextView.text = searchView.query.toString()
-        }*/
 
+        //binTextView.text = bin.toString()
+        //getJSON(bin)
 
     }
 
@@ -114,90 +72,67 @@ class MainActivity : AppCompatActivity() {
         //val bin: Int
         val url = "https://lookup.binlist.net/$bin"
 
-        var length = 0
-        var luhn = false
-        var scheme = "?"
-        var type = "?"
-        var brand = "?"
-        var prepaid = false
-
-        var numeric = 0
-        var alpha2 = "?"
-        var name = "?"
-        var emoji = "?"
-        var currency = "?"
-        var latitude = 0
-        var longitude = 0
-
-        var name_bank = "?"
-        var url_bank = "?"
-        var phone_bank = "?"
-        var city_bank = "?"
-
         val request = JsonObjectRequest(
             Request.Method.GET,
             url, null, { data ->
                 try {
-                    // Сделать красиво все
-                    if(data.getJSONObject("number").has("length")){
-                        length = data.getJSONObject("number").getString("length").toInt()
-                    }
-                    if(data.getJSONObject("number").has("luhn")){
-                        luhn = data.getJSONObject("number").getString("luhn").toBoolean()
-                    }
-                    if(data.has("scheme")){
-                        scheme = data.getString("scheme").toString()
-                    }
-                    if(data.has("type")){
-                        type = data.getString("type").toString()
-                    }
-                    if(data.has("brand")){
-                        brand =data.getString("brand").toString()
-                    }
-                    if(data.has("prepaid")){
-                        prepaid = data.getString("prepaid").toBoolean()
-                    }
-                    if(data.getJSONObject("country").has("numeric")){
-                        numeric = data.getJSONObject("country").getString("numeric").toInt()
-                    }
-                    if(data.getJSONObject("country").has("alpha2")){
-                        alpha2 = data.getJSONObject("country").getString("alpha2").toString()
-                    }
-                    if(data.getJSONObject("country").has("name")){
-                        name = data.getJSONObject("country").getString("name").toString()
-                    }
-                    if(data.getJSONObject("country").has("emoji")){
-                        emoji = data.getJSONObject("country").getString("emoji").toString()
-                    }
-                    if(data.getJSONObject("country").has("currency")){
-                        currency = data.getJSONObject("country").getString("currency").toString()
-                    }
-                    if(data.getJSONObject("country").has("latitude")){
-                        latitude = data.getJSONObject("country").getString("latitude").toInt()
-                    }
-                    if(data.getJSONObject("country").has("longitude")){
-                        longitude = data.getJSONObject("country").getString("longitude").toInt()
-                    }
-                    if(data.getJSONObject("bank").has("name")){
-                        name_bank = data.getJSONObject("bank").getString("name").toString()
-                    }
-                    if(data.getJSONObject("bank").has("url")){
-                        url_bank = data.getJSONObject("bank").getString("url").toString()
-                    }
-                    if(data.getJSONObject("bank").has("phone")){
-                        phone_bank = data.getJSONObject("bank").getString("phone").toString()
-                    }
-                    if(data.getJSONObject("bank").has("city")){
-                        city_bank = data.getJSONObject("bank").getString("city").toString()
-                    }
+                    val dataCountry = data.getJSONObject("country")
+                    val dataBank = data.getJSONObject("bank")
 
-                    val dataBIN = DataBIN(
-                        length, luhn, scheme, type, brand, prepaid,
-                        numeric, alpha2, name, emoji, currency, latitude, longitude,
-                        name_bank, url_bank, phone_bank, city_bank,
+                    dataBIN = DataBIN(
+                        if(data.getJSONObject("number").has("length")){
+                            data.getJSONObject("number").getString("length").toInt()
+                        } else 0,
+                        if(data.getJSONObject("number").has("luhn")){
+                            data.getJSONObject("number").getString("luhn").toBoolean()
+                        } else false,
+                        if(data.has("scheme")){
+                            data.getString("scheme").toString()
+                        } else "?",
+                        if(data.has("type")){
+                            data.getString("type").toString()
+                        }else "?",
+                        if(data.has("brand")){
+                            data.getString("brand").toString()
+                        }else "?",
+                        if(data.has("prepaid")){
+                            data.getString("prepaid").toBoolean()
+                        }else false,
+                        if(dataCountry.has("numeric")){
+                            dataCountry.getString("numeric").toInt()
+                        }else 0,
+                        if(dataCountry.has("alpha2")){
+                            dataCountry.getString("alpha2").toString()
+                        }else "?",
+                        if(dataCountry.has("name")){
+                            dataCountry.getString("name").toString()
+                        }else "?",
+                        if(dataCountry.has("emoji")){
+                            dataCountry.getString("emoji").toString()
+                        }else "?",
+                        if(dataCountry.has("currency")){
+                            dataCountry.getString("currency").toString()
+                        }else "?",
+                        if(dataCountry.has("latitude")){
+                            dataCountry.getString("latitude").toInt()
+                        }else 0,
+                        if(dataCountry.has("longitude")){
+                            dataCountry.getString("longitude").toInt()
+                        }else 0,
+                        if(dataBank.has("name")){
+                            dataBank.getString("name").toString()
+                        }else "?",
+                        if(dataBank.has("url")){
+                            dataBank.getString("url").toString()
+                        }else "?",
+                        if(dataBank.has("phone")){
+                            dataBank.getString("phone").toString()
+                        }else "?",
+                        if(dataBank.has("city")){
+                            dataBank.getString("city").toString()
+                        }else "?",
                     )
                     updateDayWeatherUi(dataBIN)
-
 
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -206,10 +141,24 @@ class MainActivity : AppCompatActivity() {
         requestQueue!!.add(request)
     }
 
-
-
     private fun updateDayWeatherUi(dataBIN: DataBIN) {
-        //binBankTextView!!.text = dataBIN.url_bank
+
+        val schemeTextView = findViewById<View>(R.id.schemeTextView) as TextView
+        val lengthTextView = findViewById<View>(R.id.lengthTextView) as TextView
+        val luhnTextView = findViewById<View>(R.id.luhnTextView) as TextView
+        val typeTextView = findViewById<View>(R.id.typeTextView) as TextView
+        val brandTextView = findViewById<View>(R.id.brandTextView) as TextView
+        val numericCountryTextView = findViewById<View>(R.id.numericCountryTextView) as TextView
+        val alpha2CountryTextView = findViewById<View>(R.id.alpha2CountryTextView) as TextView
+        val nameCountryTextView = findViewById<View>(R.id.nameCountryTextView) as TextView
+        val emojiCountryTextView = findViewById<View>(R.id.emojiCountryTextView) as TextView
+        val currencyCountryTextView = findViewById<View>(R.id.currencyСountryTextView) as TextView
+        val cordTextView = findViewById<View>(R.id.cordTextView) as TextView
+        val nameBankTextView = findViewById<View>(R.id.nameBankTextView) as TextView
+        val urlBankTextView = findViewById<View>(R.id.urlBankTextView) as TextView
+        val phoneBankTextView = findViewById<View>(R.id.phoneBankTextView) as TextView
+        val prepaidTextView = findViewById<View>(R.id.prepaidTextView) as TextView
+
         schemeTextView!!.text = dataBIN.scheme.capitalize()
         lengthTextView!!.text = dataBIN.length.toString()
         typeTextView!!.text = dataBIN.type.capitalize()
@@ -219,8 +168,11 @@ class MainActivity : AppCompatActivity() {
         nameCountryTextView!!.text = " "+ dataBIN.name_country
         emojiCountryTextView!!.text = dataBIN.emoji_country
         currencyCountryTextView!!.text = dataBIN.currency_country
-        cordTextView!!.text = "(lat: " + dataBIN.latitude_country +
-                ", lon: " + dataBIN.longitude_country + ")"
+
+        val geo = "Geo: " + dataBIN.latitude_country + ".0," + dataBIN.longitude_country + ".0"
+        val content = SpannableString(geo)
+        content.setSpan(UnderlineSpan(), 0, geo.length, 0)
+        cordTextView.text = content
 
         nameBankTextView!!.text = dataBIN.name_bank + ", " + dataBIN.city_bank
         urlBankTextView!!.text = dataBIN.url_bank
@@ -231,6 +183,15 @@ class MainActivity : AppCompatActivity() {
         if(dataBIN.luhn){
             luhnTextView!!.text = "Yes"
         } else luhnTextView!!.text = "No"
+
+    }
+
+    fun openMap(view: View) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("geo:" + dataBIN.latitude_country + ".0," + dataBIN.longitude_country + ".0")
+        )
+        startActivity(intent)
 
     }
 }
