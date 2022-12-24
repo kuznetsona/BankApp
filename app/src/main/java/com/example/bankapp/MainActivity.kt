@@ -1,19 +1,16 @@
 package com.example.bankapp
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONException
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var searchView: androidx.appcompat.widget.SearchView
 
-    lateinit var urlBankButton: Button
     private var requestQueue: RequestQueue? = null
 
 
@@ -65,34 +61,46 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        urlBankButton = findViewById(R.id.urlBankButton)
+
 
         requestQueue = Volley.newRequestQueue(this)
 
 
 
 
-
-        var bin = 45717360
-        var variable: CharSequence
+        //var bin = 55369140
+        var bin : Long = 45717360
+        var variable: String
         //bin = searchView.inputType
 
-        searchView.setOnSearchClickListener {
 
-            variable = searchView.query
-            binTextView.text = variable
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                //Добавить новую переменную вместо бин
+                bin = searchView.query.toString().toLong()
 
-        }
+                while(bin > 100000000){
+                    bin /= 10
+                }
 
-       // val query: CharSequence = searchView.getQuery()
-        //binTextView.text = variable
+                if (bin < 10000000){
 
+                }
+                getJSON(bin)
+                binTextView.text = bin.toString()
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String): Boolean {
+                //вызовется при изменении ведённого текста
+                return true
+            }
+        })
+/*
+        searchView.setOnCloseListener() {
+            binTextView.text = searchView.query.toString()
+        }*/
 
-        urlBankButton.setOnClickListener {
-            getJSON(bin)
-
-        }
 
     }
 
@@ -102,43 +110,93 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getJSON(bin: Int){
+    private fun getJSON(bin: Long){
         //val bin: Int
-        val url = "https://lookup.binlist.net/" +
-                bin
+        val url = "https://lookup.binlist.net/$bin"
+
+        var length = 0
+        var luhn = false
+        var scheme = "?"
+        var type = "?"
+        var brand = "?"
+        var prepaid = false
+
+        var numeric = 0
+        var alpha2 = "?"
+        var name = "?"
+        var emoji = "?"
+        var currency = "?"
+        var latitude = 0
+        var longitude = 0
+
+        var name_bank = "?"
+        var url_bank = "?"
+        var phone_bank = "?"
+        var city_bank = "?"
 
         val request = JsonObjectRequest(
             Request.Method.GET,
             url, null, { data ->
                 try {
+                    // Сделать красиво все
+                    if(data.getJSONObject("number").has("length")){
+                        length = data.getJSONObject("number").getString("length").toInt()
+                    }
+                    if(data.getJSONObject("number").has("luhn")){
+                        luhn = data.getJSONObject("number").getString("luhn").toBoolean()
+                    }
+                    if(data.has("scheme")){
+                        scheme = data.getString("scheme").toString()
+                    }
+                    if(data.has("type")){
+                        type = data.getString("type").toString()
+                    }
+                    if(data.has("brand")){
+                        brand =data.getString("brand").toString()
+                    }
+                    if(data.has("prepaid")){
+                        prepaid = data.getString("prepaid").toBoolean()
+                    }
+                    if(data.getJSONObject("country").has("numeric")){
+                        numeric = data.getJSONObject("country").getString("numeric").toInt()
+                    }
+                    if(data.getJSONObject("country").has("alpha2")){
+                        alpha2 = data.getJSONObject("country").getString("alpha2").toString()
+                    }
+                    if(data.getJSONObject("country").has("name")){
+                        name = data.getJSONObject("country").getString("name").toString()
+                    }
+                    if(data.getJSONObject("country").has("emoji")){
+                        emoji = data.getJSONObject("country").getString("emoji").toString()
+                    }
+                    if(data.getJSONObject("country").has("currency")){
+                        currency = data.getJSONObject("country").getString("currency").toString()
+                    }
+                    if(data.getJSONObject("country").has("latitude")){
+                        latitude = data.getJSONObject("country").getString("latitude").toInt()
+                    }
+                    if(data.getJSONObject("country").has("longitude")){
+                        longitude = data.getJSONObject("country").getString("longitude").toInt()
+                    }
+                    if(data.getJSONObject("bank").has("name")){
+                        name_bank = data.getJSONObject("bank").getString("name").toString()
+                    }
+                    if(data.getJSONObject("bank").has("url")){
+                        url_bank = data.getJSONObject("bank").getString("url").toString()
+                    }
+                    if(data.getJSONObject("bank").has("phone")){
+                        phone_bank = data.getJSONObject("bank").getString("phone").toString()
+                    }
+                    if(data.getJSONObject("bank").has("city")){
+                        city_bank = data.getJSONObject("bank").getString("city").toString()
+                    }
 
                     val dataBIN = DataBIN(
-
-                        data.getJSONObject("number").getString("length").toInt(),
-                        data.getJSONObject("number").getString("luhn").toBoolean(),
-
-                        data.getString("scheme").toString(),
-                        data.getString("type").toString(),
-                        data.getString("brand").toString(),
-                        data.getString("prepaid").toBoolean(),
-
-                        data.getJSONObject("country").getString("numeric").toInt(),
-                        data.getJSONObject("country").getString("alpha2").toString(),
-                        data.getJSONObject("country").getString("name").toString(),
-                        data.getJSONObject("country").getString("emoji").toString(),
-                        data.getJSONObject("country").getString("currency").toString(),
-                        data.getJSONObject("country").getString("latitude").toInt(),
-                        data.getJSONObject("country").getString("longitude").toInt(),
-
-                        data.getJSONObject("bank").getString("name").toString(),
-                        data.getJSONObject("bank").getString("url").toString(),
-                        data.getJSONObject("bank").getString("phone").toString(),
-                        data.getJSONObject("bank").getString("city").toString(),
+                        length, luhn, scheme, type, brand, prepaid,
+                        numeric, alpha2, name, emoji, currency, latitude, longitude,
+                        name_bank, url_bank, phone_bank, city_bank,
                     )
                     updateDayWeatherUi(dataBIN)
-                    //urlBankTextView!!.text = data.toString()
-                    //println("url_bank " + dataBIN.url_bank)
-                    //Log.d("url_bank", dataBIN.url_bank)
 
 
                 } catch (e: JSONException) {
@@ -146,7 +204,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }) { error -> error.printStackTrace() }
         requestQueue!!.add(request)
-        // urlBankTextView.text = dataBIN.url_bank
     }
 
 
@@ -177,3 +234,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
+
+
+
