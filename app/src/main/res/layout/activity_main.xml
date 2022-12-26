@@ -28,7 +28,7 @@
             android:id="@+id/binTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1234 5678"
+            android:text="BIN"
             android:textSize="30dp"
             android:gravity="center"
             style="?android:listSeparatorTextViewStyle"
@@ -36,10 +36,6 @@
             android:textColor="@color/night_background"
             android:paddingTop="10dp"/>
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
         <LinearLayout
@@ -68,10 +64,11 @@
             android:id="@+id/schemeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="scheme"
+            android:text=""
             android:textIsSelectable="true"
             android:textColor="@color/night_background"
             android:textSize="15dp"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -87,10 +84,11 @@
             android:id="@+id/brandTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="brand"
+            android:text=""
             android:textIsSelectable="true"
             android:textColor="@color/night_background"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -125,11 +123,11 @@
                         android:id="@+id/lengthTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="length"
+                        android:text=""
                         android:textIsSelectable="true"
                         android:textColor="@color/night_background"
                         android:textSize="15dp"
-                        />
+                        android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -150,11 +148,11 @@
                     android:id="@+id/luhnTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="luhn"
+                    android:text=""
                     android:textIsSelectable="true"
                     android:textColor="@color/night_background"
                     android:textSize="15dp"
-                    />
+                    android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -178,10 +176,11 @@
             android:id="@+id/typeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="type"
+            android:text=""
             android:textIsSelectable="true"
             android:textColor="@color/night_background"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -197,10 +196,11 @@
                     android:id="@+id/prepaidTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="prepaid"
+                    android:text=""
                     android:textIsSelectable="true"
                     android:textColor="@color/night_background"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -220,19 +220,20 @@
                         android:id="@+id/emojiCountryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="emoji "
+                        android:text=" "
                         android:textIsSelectable="true"
                         android:textColor="@color/black"
-                        android:textSize="15dp"/>
+                        android:textSize="15dp"
+                        android:textStyle="bold"/>
                     <TextView
                         android:id="@+id/nameCountryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="name"
+                        android:text=""
                         android:textIsSelectable="true"
                         android:textColor="@color/night_background"
                         android:textSize="15dp"
-                        />
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -244,19 +245,20 @@
                         android:id="@+id/alpha2CountryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="alpha "
+                        android:text=" "
                         android:textIsSelectable="true"
                         android:textColor="@color/night_background"
-                        android:textSize="11dp"/>
+                        android:textSize="11dp"
+                        android:textStyle="bold"/>
                     <TextView
                         android:id="@+id/numericCountryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="numeric"
+                        android:text=""
                         android:textIsSelectable="true"
                         android:textColor="@color/night_background"
                         android:textSize="11dp"
-                        />
+                        android:textStyle="bold"/>
 
 
                 </LinearLayout>
@@ -266,13 +268,13 @@
                     android:id="@+id/cordTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="cord"
+                    android:text=""
                     android:textIsSelectable="true"
                     android:textColor="@color/link"
                     android:textSize="15dp"
                     android:paddingTop="5dp"
                     android:onClick="openMap"
-
+                    android:textStyle="bold"
                     />
 
                 <TextView
@@ -288,10 +290,11 @@
                     android:id="@+id/currencyСountryTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="currency country"
+                    android:text=""
                     android:textIsSelectable="true"
                     android:textColor="@color/night_background"
-                    android:textSize="15dp"/>
+                    android:textSize="15dp"
+                    android:textStyle="bold"/>
 
 
             </LinearLayout>
@@ -314,30 +317,34 @@
                 android:id="@+id/nameBankTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name bank"
+                android:text=""
                 android:textIsSelectable="true"
                 android:textColor="@color/night_background"
-                android:textSize="15dp"/>
+                android:textSize="15dp"
+                android:textStyle="bold"/>
             <TextView
                 android:id="@+id/urlBankTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="url_bank"
+                android:text=""
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:textColorLink="@color/link"
                 android:textIsSelectable="true"
-                android:textSize="15dp"/>
+                android:textSize="15dp"
+                android:textStyle="bold"/>
             <TextView
                 android:id="@+id/phoneBankTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="phone bank"
+                android:text=""
                 android:autoLink="phone"
                 android:linksClickable="true"
                 android:textColorLink="@color/link"
                 android:textIsSelectable="true"
-                android:textSize="15dp"/>
+                android:textSize="15dp"
+                android:textStyle="bold"
+                />
         </LinearLayout>
 
 </LinearLayout>

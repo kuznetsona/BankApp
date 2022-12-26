@@ -1,6 +1,5 @@
 package com.example.bankapp
 
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private var requestQueue: RequestQueue? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,45 +33,29 @@ class MainActivity : AppCompatActivity() {
         searchView = findViewById(R.id.searchView)
         requestQueue = Volley.newRequestQueue(this)
 
-
-        var bin : Long = 45717360
-
-
+        var bin : Long
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                //Добавить новую переменную вместо бин
                 bin = searchView.query.toString().toLong()
 
                 while(bin > 100000000){
                     bin /= 10
                 }
-
                 getJSON(bin)
-                binTextView.text = bin.toString()
+                binTextView.text = (bin / 10000).toString() + " " + (bin % 10000)
                 return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                //вызовется при изменении ведённого текста
                 return true
             }
         })
 
-        //binTextView.text = bin.toString()
-        //getJSON(bin)
-
     }
 
-    override fun onStart() {
-        super.onStart()
-
-
-    }
 
     private fun getJSON(bin: Long){
-        //val bin: Int
         val url = "https://lookup.binlist.net/$bin"
-
         val request = JsonObjectRequest(
             Request.Method.GET,
             url, null, { data ->
@@ -84,53 +68,53 @@ class MainActivity : AppCompatActivity() {
                             data.getJSONObject("number").getString("length").toInt()
                         } else 0,
                         if(data.getJSONObject("number").has("luhn")){
-                            data.getJSONObject("number").getString("luhn").toBoolean()
-                        } else false,
+                            data.getJSONObject("number").getString("luhn").toString()
+                        } else "-",
                         if(data.has("scheme")){
                             data.getString("scheme").toString()
-                        } else "?",
+                        } else "-",
                         if(data.has("type")){
                             data.getString("type").toString()
-                        }else "?",
+                        }else "-",
                         if(data.has("brand")){
                             data.getString("brand").toString()
-                        }else "?",
+                        }else "-",
                         if(data.has("prepaid")){
-                            data.getString("prepaid").toBoolean()
-                        }else false,
+                            data.getString("prepaid").toString()
+                        }else "-",
                         if(dataCountry.has("numeric")){
                             dataCountry.getString("numeric").toInt()
                         }else 0,
                         if(dataCountry.has("alpha2")){
                             dataCountry.getString("alpha2").toString()
-                        }else "?",
+                        }else "-",
                         if(dataCountry.has("name")){
                             dataCountry.getString("name").toString()
-                        }else "?",
+                        }else "-",
                         if(dataCountry.has("emoji")){
                             dataCountry.getString("emoji").toString()
-                        }else "?",
+                        }else "-",
                         if(dataCountry.has("currency")){
                             dataCountry.getString("currency").toString()
-                        }else "?",
+                        }else "-",
                         if(dataCountry.has("latitude")){
                             dataCountry.getString("latitude").toInt()
                         }else 0,
                         if(dataCountry.has("longitude")){
-                            dataCountry.getString("longitude").toInt()
-                        }else 0,
+                            dataCountry.getString("longitude").toDouble()
+                        }else 0.0,
                         if(dataBank.has("name")){
                             dataBank.getString("name").toString()
-                        }else "?",
+                        }else "-",
                         if(dataBank.has("url")){
                             dataBank.getString("url").toString()
-                        }else "?",
+                        }else "-",
                         if(dataBank.has("phone")){
                             dataBank.getString("phone").toString()
-                        }else "?",
+                        }else "-",
                         if(dataBank.has("city")){
                             dataBank.getString("city").toString()
-                        }else "?",
+                        }else "-",
                     )
                     updateDayWeatherUi(dataBIN)
 
@@ -160,11 +144,21 @@ class MainActivity : AppCompatActivity() {
         val prepaidTextView = findViewById<View>(R.id.prepaidTextView) as TextView
 
         schemeTextView!!.text = dataBIN.scheme.capitalize()
-        lengthTextView!!.text = dataBIN.length.toString()
+        if (dataBIN.length == 0) {
+            lengthTextView!!.text = "-"
+        } else  lengthTextView!!.text = dataBIN.length.toString()
+
         typeTextView!!.text = dataBIN.type.capitalize()
         brandTextView!!.text = dataBIN.brand
-        numericCountryTextView!!.text = dataBIN.numeric_country.toString()
-        alpha2CountryTextView!!.text = dataBIN.alpha2_country + " "
+
+        if (dataBIN.length == 0) {
+            numericCountryTextView!!.text = "-"
+        } else  numericCountryTextView!!.text = dataBIN.numeric_country.toString()
+
+        if (dataBIN.length == 0) {
+            alpha2CountryTextView!!.text = " "
+        } else  alpha2CountryTextView!!.text = dataBIN.alpha2_country + " "
+
         nameCountryTextView!!.text = " "+ dataBIN.name_country
         emojiCountryTextView!!.text = dataBIN.emoji_country
         currencyCountryTextView!!.text = dataBIN.currency_country
@@ -177,12 +171,18 @@ class MainActivity : AppCompatActivity() {
         nameBankTextView!!.text = dataBIN.name_bank + ", " + dataBIN.city_bank
         urlBankTextView!!.text = dataBIN.url_bank
         phoneBankTextView!!.text = dataBIN.phone_bank
-        if(dataBIN.prepaid){
+
+        if(dataBIN.prepaid == "true"){
             prepaidTextView!!.text = "Yes"
-        } else prepaidTextView!!.text = "No"
-        if(dataBIN.luhn){
+        } else if (dataBIN.prepaid == "false") {
+            prepaidTextView!!.text = "No"
+        } else prepaidTextView!!.text = "-"
+
+        if(dataBIN.luhn == "true"){
             luhnTextView!!.text = "Yes"
-        } else luhnTextView!!.text = "No"
+        } else if (dataBIN.luhn == "false"){
+            luhnTextView!!.text = "No"
+        } else luhnTextView!!.text = "-"
 
     }
 
@@ -192,7 +192,6 @@ class MainActivity : AppCompatActivity() {
             Uri.parse("geo:" + dataBIN.latitude_country + ".0," + dataBIN.longitude_country + ".0")
         )
         startActivity(intent)
-
     }
 }
 
